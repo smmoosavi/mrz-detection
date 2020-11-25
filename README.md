@@ -13,11 +13,11 @@ This script will treat all PNG or JPEG images in the specified `dir` and create 
 containing the images at each step of the process.
 The purpose of this script is to locate the MRZ and crop/rotate the image to keep only this part.
 
-Final images will be in `data/imageDir/out/cropped`
+Final images will be in `data/imageDir/out/crop`
 
 ### readMrz
+`node run/readMrz.js --dir data/imageDir/out/crop --reference data/imageDir/ground.csv`
 
-`node run/readMrz.js --dir data/imageDir/out/cropped --reference data/imageDir/ground.csv`
 
 This script will attempt to read the MRZ of all images in the specified `dir` and compare the read
 data with the `reference`.

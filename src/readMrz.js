@@ -6,6 +6,7 @@ const ENVIRONMENT_IS_WORKER = typeof importScripts === 'function';
 const { join } = require('path');
 
 const mrzOcr = require('./internal/mrzOcr');
+const symbols = require('./internal/symbols'); // SYMBOLS MRZ NUMBERS
 const roiOptions = require('./roiOptions');
 
 const fingerprintOptions = {
