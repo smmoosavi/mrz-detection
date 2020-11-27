@@ -19,6 +19,7 @@ const fingerprintOptions = {
   ambiguity: true
 };
 
+/* eslint-disable no-unused-vars */
 var fontFingerprint;
 if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
   fontFingerprint = require('../fontData/12x12/mrz/ocrb.json');
@@ -28,6 +29,7 @@ if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
   const { loadFontData } = require(_module);
   fontFingerprint = loadFontData(fingerprintOptions);
 }
+/* eslint-enable no-unused-vars */
 
 async function readMrz(image, options = {}) {
   var { ocrResult, mask, rois } = await mrzOcr(image, roiOptions);
