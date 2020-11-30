@@ -136,19 +136,24 @@ async function applyModel(name, Xtest) {
   return prediction;
 }
 
-async function createModel(letters, name, SVMOptions, kernelOptions) {
-  const { descriptors: descriptorsPath, model: modelPath } = getFilePath(name);
+async function createModel(letters, SVMOptions, kernelOptions) {
+  // const { descriptors: descriptorsPath, model: modelPath } = getFilePath(name);
   const { descriptors, classifier } = await train(
     letters,
     SVMOptions,
     kernelOptions
   );
-  const bson = new BSON();
-  await fs.writeFile(
-    descriptorsPath,
-    bson.serialize({ descriptors, kernelOptions })
-  );
-  await fs.writeFile(modelPath, classifier.serializeModel());
+  // const bson = new BSON();
+  // Let consumer handle persistance.
+  // await fs.writeFile(
+  //   descriptorsPath,
+  //   bson.serialize({ descriptors, kernelOptions })
+  // );
+  // await fs.writeFile(modelPath, classifier.serializeModel());
+  return {
+    model: classifier.serializeModel,
+    descriptors: { descriptors, kernelOptions } // bson.serialize({ descriptors, kernelOptions })
+  };
 }
 
 function predict(classifier, Xtrain, Xtest, kernelOptions) {
