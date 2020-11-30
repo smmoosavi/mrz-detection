@@ -7,39 +7,15 @@ const path = require('path');
 // babelify will generate distinct names if we define
 // the same constants both in "if" and "else" blocks
 // Variables are fine for me...
-var fs;
+const fs = require('fs');
+
 var SVMPromise;
 
 if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
-  const request = require('request-promise');
-  fs = {
-    readFile: function (url, encoding) {
-      var dirname = __dirname.split('/');
-      dirname.pop();
-      url = url.replace(dirname.join('/'), '');
-      return request({
-        /* global self */
-        /* global location */
-        /* eslint no-undef: "error" */
-        url: ((self && self.config && self.config.fsRootUrl) ? `${self.config.fsRootUrl}/${url}` : `${location.origin}/${url}`),
-        encoding: null,
-        resolveWithFullResponse: false
-      })
-        .then(function (body) {
-          var buf = Buffer.from(body);
-          return (encoding) ? buf.toString(encoding) : buf;
-        });
-    },
-    writeFile: function () {
-      throw new Error('writeFile not implemented');
-    }
-  };
   SVMPromise = Promise.resolve(require('libsvm-js/asm'));
 } else {
   // use a variable for the module name so that browserify does not include it
-  var _module = 'fs-extra';
-  fs = require(_module);
-  _module = 'libsvm-js/wasm';
+  var _module = 'libsvm-js/wasm';
   SVMPromise = Promise.resolve(require(_module));
 }
 
@@ -127,10 +103,10 @@ async function applyModel(name, Xtest) {
   const { descriptors: descriptorsPath, model: modelPath } = getFilePath(name);
   const bson = new BSON();
   const { descriptors: Xtrain, kernelOptions } = bson.deserialize(
-    await fs.readFile(descriptorsPath)
+    fs.readFileSync(descriptorsPath)
   );
 
-  const model = await fs.readFile(modelPath, 'utf-8');
+  const model = fs.readFileSync(modelPath, 'utf-8');
   const classifier = SVM.load(model);
   const prediction = predict(classifier, Xtrain, Xtest, kernelOptions);
   return prediction;
