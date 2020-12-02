@@ -9,8 +9,26 @@
     "models"
   ],
   "browserify": {
-    "transform": ["brfs",["deassertify", {"nobundle":true}],[ "babelify", {"presets": ["module:metro-react-native-babel-preset"] }] ],
-    "plugin":["wasmify"]
+    "transform": [
+      "brfs",
+      [
+        "deassertify",
+        {
+          "nobundle": true
+        }
+      ],
+      [
+        "babelify",
+        {
+          "presets": [
+            "module:metro-react-native-babel-preset"
+          ]
+        }
+      ]
+    ],
+    "plugin": [
+      "wasmify"
+    ]
   },
   "scripts": {
     "eslint": "eslint src run",
