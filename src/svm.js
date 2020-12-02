@@ -1,4 +1,7 @@
 'use strict';
+const ENVIRONMENT_IS_WEB = typeof window === 'object';
+const ENVIRONMENT_IS_WORKER = typeof importScripts === 'function';
+
 const path = require('path');
 
 // babelify will generate distinct names if we define
@@ -8,10 +11,13 @@ const fs = require('fs');
 
 var SVMPromise;
 
-
-// use a variable for the module name so that browserify does not include it
-var _module = 'libsvm-js/wasm';
-SVMPromise = Promise.resolve(require(_module));
+if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
+  SVMPromise = Promise.resolve(require('libsvm-js/asm'));
+} else {
+  // use a variable for the module name so that browserify does not include it
+  var _module = 'libsvm-js/wasm';
+  SVMPromise = Promise.resolve(require(_module));
+}
 
 const hog = require('hog-features');
 const Kernel = require('ml-kernel');
