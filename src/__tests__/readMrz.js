@@ -4,7 +4,7 @@ const path = require('path');
 
 const Image = require('image-js').Image;
 
-const { getMrz, readMrz } = require('../..');
+const { getMrz, readMrz } = require('../../build/app.js');
 
 it(
   'test the extraction of MRZ characters on an identity card',

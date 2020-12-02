@@ -8,13 +8,17 @@
     "fontData/12x12/mrz/ocrb.json",
     "models"
   ],
+  "browserify": {
+    "transform": ["brfs",["deassertify", {"nobundle":true}],[ "babelify", {"presets": ["module:metro-react-native-babel-preset"] }] ],
+    "plugin":["wasmify"]
+  },
   "scripts": {
     "eslint": "eslint src run",
     "eslint-fix": "npm run eslint -- --fix",
     "test": "run-s testonly eslint",
     "test-travis": "eslint src && jest --coverage && codecov",
     "testonly": "jest",
-    "build-js": "browserify -t [ babelify --presets [ @babel/react ] brfs deassertify [--nobundle] ] -d src/index.js -o build/app.js"
+    "build-js": "browserify src/index.js --standalone mrz-detector > build/app.js"
   },
   "repository": {
     "type": "git",
@@ -45,6 +49,7 @@
     "eslint-plugin-jest": "^21.18.0",
     "jest": "^26.6.3",
     "make-promises-safe": "^1.1.0",
+    "metro-react-native-babel-preset": "^0.64.0",
     "npm-run-all": "^4.1.2",
     "papaparse": "^5.3.0",
     "rimraf": "^2.6.2",
@@ -54,6 +59,7 @@
     "babelify": "^10.0.0",
     "bson": "^2.0.8",
     "canvas": "^2.6.1",
+    "fs": "^0.0.1-security",
     "fs-extra": "^6.0.1",
     "hog-features": "^1.0.0",
     "image-js": "^0.21.0",

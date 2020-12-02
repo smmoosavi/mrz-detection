@@ -1,7 +1,4 @@
 'use strict';
-const ENVIRONMENT_IS_WEB = typeof window === 'object';
-const ENVIRONMENT_IS_WORKER = typeof importScripts === 'function';
-
 const path = require('path');
 
 // babelify will generate distinct names if we define
@@ -11,13 +8,10 @@ const fs = require('fs');
 
 var SVMPromise;
 
-if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
-  SVMPromise = Promise.resolve(require('libsvm-js/asm'));
-} else {
-  // use a variable for the module name so that browserify does not include it
-  var _module = 'libsvm-js/wasm';
-  SVMPromise = Promise.resolve(require(_module));
-}
+
+// use a variable for the module name so that browserify does not include it
+var _module = 'libsvm-js/wasm';
+SVMPromise = Promise.resolve(require(_module));
 
 const hog = require('hog-features');
 const Kernel = require('ml-kernel');
@@ -100,13 +94,15 @@ function predictImages(images, modelName) {
 
 async function applyModel(name, Xtest) {
   await loadSVM();
-  const { descriptors: descriptorsPath, model: modelPath } = getFilePath(name);
+  // const { descriptors: descriptorsPath, model: modelPath } = getFilePath(name);
   const bson = new BSON();
   const { descriptors: Xtrain, kernelOptions } = bson.deserialize(
-    fs.readFileSync(descriptorsPath)
+    // fs.readFileSync(descriptorsPath)
+    fs.readFileSync(path.join(__dirname, '../models/ESC-v2.svm.descriptors'))
   );
 
-  const model = fs.readFileSync(modelPath, 'utf-8');
+  const model = fs.readFileSync(path.join(__dirname, '../models/ESC-v2.svm.model'), 'utf-8');
+  // const model = fs.readFileSync(modelPath, 'utf-8');
   const classifier = SVM.load(model);
   const prediction = predict(classifier, Xtrain, Xtest, kernelOptions);
   return prediction;
@@ -186,14 +182,14 @@ async function train(letters, SVMOptions, kernelOptions) {
   return { classifier, descriptors: Xtrain, oneClass };
 }
 
-function getFilePath(name) {
-  const dataDir = path.join(__dirname, '../models');
-  const fileBase = path.join(dataDir, name);
-  return {
-    descriptors: `${fileBase}.svm.descriptors`,
-    model: `${fileBase}.svm.model`
-  };
-}
+// function getFilePath(name) {
+//   const dataDir = path.join(__dirname, '../models');
+//   const fileBase = path.join(dataDir, name);
+//   return {
+//     descriptors: `${fileBase}.svm.descriptors`,
+//     model: `${fileBase}.svm.model`
+//   };
+// }
 
 async function loadSVM() {
   SVM = await SVMPromise;
