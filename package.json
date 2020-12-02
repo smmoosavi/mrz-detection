@@ -36,7 +36,7 @@
     "test": "run-s testonly eslint",
     "test-travis": "eslint src && jest --coverage && codecov",
     "testonly": "jest",
-    "build-js": "browserify src/index.js --standalone mrz-detector > build/app.js"
+    "build-js": "browserify src/index.js --standalone mrz-detector > build/Mrz.js"
   },
   "repository": {
     "type": "git",
